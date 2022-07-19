@@ -2,31 +2,26 @@ import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCircleQuestion,
-    faCircleXmark,
     faCoins,
     faEarthAsia,
     faEllipsisVertical,
     faGear,
     faKeyboard,
-    faMagnifyingGlass,
-    faMessage,
     faSignOut,
-    faSpinner,
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
-import HeadlessTippy from '@tippyjs/react/headless';
+
 import 'tippy.js/dist/tippy.css';
 
 import Button from '~/components/Button';
 import styles from './Header.module.scss';
 import images from '~/assets/images';
-import { useEffect, useState } from 'react';
-import { Wrapper as PopperWrapper } from '~/components/Popper';
-import AccountItem from '../../AccountItem';
+
 import Menu from '~/components/Popper/Menu';
-import { UploadIcon } from '~/components/Icon';
+import { InboxIcon, UploadIcon, MessageIcon } from '~/components/Icon';
 import Image from '~/components/Image';
+import Search from '~/components/Layout/Search';
 
 const cx = classNames.bind(styles);
 const MENU_ITEMS = [
@@ -98,50 +93,30 @@ const userMenu = [
 ];
 
 function Header() {
-    const [searchResults, setSeachResults] = useState([]);
     const currentUser = true;
 
-    useEffect(() => {
-        setTimeout(() => {
-            setSeachResults([]);
-        }, 0);
-    }, []);
     return (
         <header className={cx('wrapper')}>
             <div className={cx('inner')}>
                 <img src={images.logo} alt="tiktok" />
-                <HeadlessTippy
-                    interactive
-                    visible={searchResults.length > 0}
-                    render={(attrs) => (
-                        <div className={cx('search-result')} tabIndex="-1" {...attrs}>
-                            <PopperWrapper>
-                                <h4 className={cx('search-title')}>Accounts</h4>
-                                <AccountItem />
-                                <AccountItem />
-                                <AccountItem />
-                            </PopperWrapper>
-                        </div>
-                    )}
-                >
-                    <div className={cx('search')}>
-                        <input type="text" placeholder="Search account and videos" spellCheck={false} />
-                        <button className={cx('clear')}>
-                            <FontAwesomeIcon icon={faCircleXmark} />
-                        </button>
-                        <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />
-
-                        <button className={cx('search-btn')}>
-                            <FontAwesomeIcon icon={faMagnifyingGlass} />
-                        </button>
-                    </div>
-                </HeadlessTippy>
+                <Search />
                 <div className={cx('actions')}>
                     {currentUser ? (
                         <>
-                            <Tippy delay={[0, 300]} trigger="click" content="Upload video">
+                            <Tippy delay={[0, 50]} trigger="click" placement="bottom" content="Upload video">
                                 <button className={cx('action-btn')}>
                                     <UploadIcon />
+                                </button>
+                            </Tippy>
+                            <Tippy delay={[0, 50]} trigger="click" placement="bottom" content="Message">
+                                <button className={cx('action-btn')}>
+                                    <MessageIcon />
+                                </button>
+                            </Tippy>
+                            <Tippy delay={[0, 50]} trigger="click" placement="bottom" content="Inbox ">
+                                <button className={cx('action-btn')}>
+                                    <InboxIcon />
+                                    <span className={cx('badge')}>12</span>
                                 </button>
                             </Tippy>
                         </>
