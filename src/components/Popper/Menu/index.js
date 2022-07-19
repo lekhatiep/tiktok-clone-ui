@@ -32,7 +32,6 @@ function Menu({ children, items = [], onChange = defaultFn }) {
     };
     return (
         <Tippy
-            visible
             interactive
             offset={[11, 12]}
             delay={[0, 500]}
