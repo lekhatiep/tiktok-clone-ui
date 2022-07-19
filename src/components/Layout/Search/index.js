@@ -4,10 +4,12 @@ import HeadlessTippy from '@tippyjs/react/headless';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 
+import * as searchService from '~/apiServices/searchService';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountItem from '~/components/Layout/AccountItem';
 import styles from './Search.module.scss';
 import { SearchIcon } from '~/components/Icon';
+import useDebounce from '~/components/hooks/useDebounce';
 
 const cx = classNames.bind(styles);
 function Search() {
@@ -18,23 +20,23 @@ function Search() {
 
     const inputRef = useRef();
 
+    const debounced = useDebounce(searchValue, 500);
+
     useEffect(() => {
-        if (!searchValue.trim()) {
+        if (!debounced.trim()) {
             setSeachResults([]);
             return;
         }
 
-        setLoading(true);
+        const fetchApi = async () => {
+            setLoading(true);
+            const result = await searchService.search(debounced);
+            setSeachResults(result);
+            setLoading(false);
+        };
 
-        fetch(`https://tiktok.fullstack.edu.vn/api/users/search?q=${encodeURIComponent(searchValue)}&type=less`)
-            .then((res) => res.json())
-            .then((res) => {
-                console.log(res.data);
-                setSeachResults(res.data);
-                setLoading(false);
-            })
-            .catch(() => setLoading(false));
-    }, [searchValue]);
+        fetchApi();
+    }, [debounced]);
 
     const handleClear = () => {
         setSeachValue('');
